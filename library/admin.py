@@ -16,7 +16,7 @@ except ImportError:
 from .models import Book, Student, Faculty, IssuedBook, BookIssuedHistory
 #------------------email function for return---------------------------------------------------#
 def send_email_action(modeladmin, request, queryset):
-    subject = "Code Crafter Library"
+    subject = "E.C / I.C.T Library"
     html_message = render_to_string("library/send_email.html")  # Ensure this template exists
     plain_message = strip_tags(html_message)
 
@@ -36,7 +36,7 @@ def send_email_action(modeladmin, request, queryset):
 send_email_action.short_description = "Send Email confirm Retun Book "
 #-----------------------------------warning email-------------------------------------------#
 def send_warning_email(modeladmin, request, queryset):
-    subject = "Code Crafter Library"
+    subject = "E.C / I.C.T Library"
     html_message = render_to_string("library/send_warning_email.html")  # Ensure this template exists
     plain_message = strip_tags(html_message)
 
