@@ -26,6 +26,7 @@
                 <th>ISBN</th>
                 <th>Publisher</th>
                 <th>Quantity</th>
+                <th>QR Code</th> <!-- Added QR Code Column -->
             </tr>
         </thead>
         <tbody>
@@ -36,6 +37,13 @@
                 <td>{{ book.isbn }}</td>
                 <td>{{ book.publisher }}</td>
                 <td>{{ book.quantity }}</td>
+                <td>
+                    {% if book.qrcode %}
+                        <img src="{{ book.qrcode.url }}" alt="QR Code" class="qr-code">
+                    {% else %}
+                        No QR Code
+                    {% endif %}
+                </td>
             </tr>
             {% endfor %}
         </tbody>
@@ -97,11 +105,23 @@
         font-size: 14px;
     }
 
+    /* QR Code Styling */
+    .qr-code {
+        width: 60px;
+        height: 60px;
+        display: block;
+        margin: auto;
+    }
+
     /* Responsive Design */
     @media (max-width: 768px) {
         th, td {
             font-size: 12px; /* Smaller font size for smaller screens */
             padding: 10px;
+        }
+        .qr-code {
+            width: 40px;
+            height: 40px;
         }
     }
 </style>

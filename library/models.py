@@ -1,6 +1,22 @@
+import barcode
+from barcode.writer import ImageWriter
+from django.db import models
+from io import BytesIO
+from django.core.files import File
+# Book model
+import barcode
+from barcode.writer import ImageWriter
+from django.db import models
+from io import BytesIO
+from django.core.files import File
+import qrcode
+from django.core.files.base import ContentFile
+
+import qrcode
+from io import BytesIO
+from django.core.files.base import ContentFile
 from django.db import models
 
-# Book model
 class Book(models.Model):
     title = models.CharField(max_length=255)
     author = models.CharField(max_length=255)
@@ -8,9 +24,24 @@ class Book(models.Model):
     publisher = models.CharField(max_length=255)
     publication_date = models.DateField()
     quantity = models.IntegerField()
+    qrcode = models.ImageField(upload_to='qrcodes/', blank=True, null=True)
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        # Generate QR Code
+        qr_data = f"Title: {self.title}\nAuthor: {self.author}\nISBN: {self.isbn}"
+        qr = qrcode.make(qr_data)
+
+        # Save QR Code to ImageField
+        buffer = BytesIO()
+        qr.save(buffer, format="png")
+        self.qrcode.save(f"{self.isbn}_qrcode.png", ContentFile(buffer.getvalue()), save=False)
+
+        super().save(*args, **kwargs)
+
+
 
 # Student model
 class Student(models.Model):
