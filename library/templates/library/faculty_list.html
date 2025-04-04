@@ -12,6 +12,7 @@
             <th>Email</th>
             <th>Faculty ID</th>
             <th>Department</th>
+            <th>QR Code</th>
         </tr>
     </thead>
     <tbody>
@@ -22,9 +23,24 @@
             <td>{{ faculty.email }}</td>
             <td>{{ faculty.faculty_id }}</td>
             <td>{{ faculty.department }}</td>
+            <td>
+                {% if faculty.qrcode %}
+                    <img src="{{ faculty.qrcode.url }}" alt="QR Code" class="qr-code">
+                {% else %}
+                    No QR Code
+                {% endif %}
+            </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
-
+<style>
+    /* QR Code Styling */
+    .qr-code {
+        width: 70px;
+        height: 70px;
+        display: block;
+        margin: auto;
+    }
+</style>
 {% endblock %}

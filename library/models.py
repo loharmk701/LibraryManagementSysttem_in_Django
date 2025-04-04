@@ -24,7 +24,7 @@ class Book(models.Model):
     publisher = models.CharField(max_length=255)
     publication_date = models.DateField()
     quantity = models.IntegerField()
-    qrcode = models.ImageField(upload_to='qrcodes/', blank=True, null=True)
+    qrcode = models.ImageField(upload_to='qrcodes/book/', blank=True, null=True)
 
     def __str__(self):
         return self.title
@@ -50,9 +50,23 @@ class Student(models.Model):
     email = models.EmailField(unique=True)
     student_id = models.CharField(max_length=12, unique=True)
     department = models.CharField(max_length=255)
+    qrcode = models.ImageField(upload_to='qrcodes/student/', blank=True, null=True)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.student_id})"
+
+    def save(self, *args, **kwargs):
+        # Generate QR Code
+        qr_data = f"First_name: {self.first_name}\nLast_nam:{self.last_name}\nStudent_id: {self.student_id}\nDepartment: {self.department}\nEmail: {self.email}"
+        qr = qrcode.make(qr_data)
+
+        # Save QR Code to ImageField
+        buffer = BytesIO()
+        qr.save(buffer, format="png")
+        self.qrcode.save(f"{self.student_id}_qrcode.png", ContentFile(buffer.getvalue()), save=False)
+
+        super().save(*args, **kwargs)
+    
 
 # Faculty model
 class Faculty(models.Model):
@@ -61,9 +75,21 @@ class Faculty(models.Model):
     email = models.EmailField(unique=True)
     faculty_id = models.CharField(max_length=10, unique=True)
     department = models.CharField(max_length=255)
+    qrcode = models.ImageField(upload_to='qrcodes/faculty/', blank=True, null=True)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.faculty_id})"
+    def save(self, *args, **kwargs):
+        # Generate QR Code
+        qr_data = f"First_name: {self.first_name}\nLast_nam:{self.last_name}\nStudent_id: {self.faculty_id}\nDepartment: {self.department}\nEmail: {self.email}"
+        qr = qrcode.make(qr_data)
+
+        # Save QR Code to ImageField
+        buffer = BytesIO()
+        qr.save(buffer, format="png")
+        self.qrcode.save(f"{self.faculty_id}_qrcode.png", ContentFile(buffer.getvalue()), save=False)
+
+        super().save(*args, **kwargs)
 
 # IssuedBook model
 class IssuedBook(models.Model):

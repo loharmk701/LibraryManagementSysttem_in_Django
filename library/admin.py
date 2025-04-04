@@ -85,20 +85,34 @@ if import_export_installed:
         resource_class = BookResource
 
 class StudentAdmin(admin.ModelAdmin):
-    list_display = ('id', 'first_name', 'last_name', 'email', 'student_id', 'department')
+    list_display = ('id', 'first_name', 'last_name', 'email', 'student_id', 'department','display_qrcode')
     search_fields = ('first_name', 'last_name', 'email', 'student_id', 'department')
     ordering = ['first_name']
     actions = [send_warning_email, send_email_action]
+
+    def display_qrcode(self, obj):
+        if obj.qrcode:
+            return mark_safe(f'<img src="{obj.qrcode.url}" width="100" height="100" />')
+        return "No QR Code"
+
+    display_qrcode.short_description = "QR Code"
 
 if import_export_installed:
     class StudentAdmin(ImportExportMixin, StudentAdmin):
         resource_class = StudentResource
 
 class FacultyAdmin(admin.ModelAdmin):
-    list_display = ('id', 'first_name', 'last_name', 'email', 'faculty_id', 'department')
+    list_display = ('id', 'first_name', 'last_name', 'email', 'faculty_id', 'department','display_qrcode')
     search_fields = ('first_name', 'last_name', 'email', 'faculty_id', 'department')
     ordering = ['first_name']
     actions = [send_warning_email, send_email_action]
+
+    def display_qrcode(self, obj):
+        if obj.qrcode:
+            return mark_safe(f'<img src="{obj.qrcode.url}" width="100" height="100" />')
+        return "No QR Code"
+
+    display_qrcode.short_description = "QR Code"
 
 if import_export_installed:
     class FacultyAdmin(ImportExportMixin, FacultyAdmin):
