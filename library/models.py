@@ -1,4 +1,8 @@
 from django.db import models
+import qrcode
+from io import BytesIO
+from django.core.files import File
+from PIL import Image
 
 # Book model
 class Book(models.Model):
@@ -8,9 +12,23 @@ class Book(models.Model):
     publisher = models.CharField(max_length=255)
     publication_date = models.DateField()
     quantity = models.IntegerField()
+    qr_code = models.ImageField(upload_to='qr_codes/books/', blank=True)
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        data = f"Book Title: {self.title}\n ISBN: {self.isbn}\n Total Qty: {self.quantity}"
+        qr = qrcode.make(data)
+
+        buffer = BytesIO()
+        qr.save(buffer, format="PNG")
+        fname = f'book_qr_{self.isbn}.png'
+        self.qr_code.save(fname, File(buffer), save=False)
+
+        super().save(*args, **kwargs)
 
 # Student model
 class Student(models.Model):
@@ -19,9 +37,23 @@ class Student(models.Model):
     email = models.EmailField(unique=True)
     student_id = models.CharField(max_length=12, unique=True)
     department = models.CharField(max_length=255)
+    qr_code = models.ImageField(upload_to='qr_codes/students/', blank=True, null=True)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.student_id})"
+    
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)  # Save to get ID
+
+        data = f"First Name: {self.first_name}\n Last Name: {self.last_name}\n Student Id: {self.student_id}\n Department: {self.department}"
+        qr = qrcode.make(data)
+
+        buffer = BytesIO()
+        qr.save(buffer, format="PNG")
+        fname = f'student_qr_{self.student_id}.png'
+        self.qr_code.save(fname, File(buffer), save=False)
+
+        super().save(*args, **kwargs)  # Save again with QR
 
 # Faculty model
 class Faculty(models.Model):
@@ -30,9 +62,23 @@ class Faculty(models.Model):
     email = models.EmailField(unique=True)
     faculty_id = models.CharField(max_length=10, unique=True)
     department = models.CharField(max_length=255)
+    qr_code = models.ImageField(upload_to='qr_codes/faculty/', blank=True, null=True)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.faculty_id})"
+    
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        data = f"First Name: {self.first_name}\n Last Name: {self.last_name}\n Faculty Id: {self.faculty_id}\n Department: {self.department}"
+        qr = qrcode.make(data)
+
+        buffer = BytesIO()
+        qr.save(buffer, format="PNG")
+        fname = f'faculty_qr_{self.faculty_id}.png'
+        self.qr_code.save(fname, File(buffer), save=False)
+
+        super().save(*args, **kwargs)
 
 # IssuedBook model
 class IssuedBook(models.Model):

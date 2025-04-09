@@ -16,6 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('jet/', include('jet.urls', 'jet')), 
@@ -23,3 +25,5 @@ urlpatterns = [
     path('library/', include('library.urls')),
     path('', include('library.urls')),
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

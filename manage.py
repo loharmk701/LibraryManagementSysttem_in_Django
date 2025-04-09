@@ -1,6 +1,6 @@
 import os
 import sys
-
+#install pip install qrcode pillow
 def main():
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'library_management.settings')

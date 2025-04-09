@@ -137,3 +137,6 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'librarysystem120@gmail.com'  # Replace with your email
 EMAIL_HOST_PASSWORD = 'ylzhpbwgpwtfgjrh'  # Replace with your email password
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'

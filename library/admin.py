@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.utils.translation import gettext_lazy as _
-
+from django.utils.safestring import mark_safe
 # Import the necessary resources and mixins from import-export
 try:
     from import_export import resources
@@ -102,24 +102,39 @@ if import_export_installed:
     # Admin classes using ImportExportMixin
     class BookAdmin(ImportExportMixin, admin.ModelAdmin):
         resource_class = BookResource
-        list_display = ('id', 'title', 'author', 'isbn', 'publisher', 'publication_date', 'quantity')
+        list_display = ('id', 'title', 'author', 'isbn', 'publisher', 'publication_date', 'quantity', 'qr_code_preview')
         search_fields = ('title', 'author', 'isbn', 'publisher')
         ordering = ['title']
+        def qr_code_preview(self, obj):
+            if obj.qr_code:
+                return mark_safe(f'<img src="{obj.qr_code.url}" width="100" height="100" />')
+            return "-"
+        qr_code_preview.short_description = "QR Code"
 
     class StudentAdmin(ImportExportMixin, admin.ModelAdmin):
         resource_class = StudentResource
-        list_display = ('id', 'first_name', 'last_name', 'email', 'student_id', 'department')
+        list_display = ('id', 'first_name', 'last_name', 'email', 'student_id', 'department', 'qr_code_preview')
         search_fields = ('first_name', 'last_name', 'email', 'student_id', 'department')
         ordering = ['first_name']
         actions = [send_warning_email, send_email_action]
+        def qr_code_preview(self, obj):
+            if obj.qr_code:
+                return mark_safe(f'<img src="{obj.qr_code.url}" width="100" height="100" />')
+            return "-"
+        qr_code_preview.short_description = "QR Code"
              
 
     class FacultyAdmin(ImportExportMixin, admin.ModelAdmin):
         resource_class = FacultyResource
-        list_display = ('id', 'first_name', 'last_name', 'email', 'faculty_id', 'department')
+        list_display = ('id', 'first_name', 'last_name', 'email', 'faculty_id', 'department', 'qr_code_preview')
         search_fields = ('first_name', 'last_name', 'email', 'faculty_id', 'department')
         ordering = ['first_name']
         actions = [send_warning_email, send_email_action]
+        def qr_code_preview(self, obj):
+            if obj.qr_code:
+                return mark_safe(f'<img src="{obj.qr_code.url}" width="100" height="100" />')
+            return "-"
+        qr_code_preview.short_description = "QR Code"
        
     
 
@@ -140,18 +155,18 @@ if import_export_installed:
 
 else:
     class BookAdmin(admin.ModelAdmin):
-        list_display = ('id', 'title', 'author', 'isbn', 'publisher', 'publication_date', 'quantity')
+        list_display = ('id', 'title', 'author', 'isbn', 'publisher', 'publication_date', 'quantity', 'qr_code_preview')
         search_fields = ('title', 'author', 'isbn', 'publisher')
         ordering = ['title']
 
     class StudentAdmin(admin.ModelAdmin):
-        list_display = ('id', 'first_name', 'last_name', 'email', 'student_id', 'department')
+        list_display = ('id', 'first_name', 'last_name', 'email', 'student_id', 'department', 'qr_code_preview')
         search_fields = ('first_name', 'last_name', 'email', 'student_id', 'department')
         ordering = ['first_name']
         actions = [send_warning_email, send_email_action]
 
     class FacultyAdmin(admin.ModelAdmin):
-        list_display = ('id', 'first_name', 'last_name', 'email', 'faculty_id', 'department')
+        list_display = ('id', 'first_name', 'last_name', 'email', 'faculty_id', 'department', 'qr_code_preview')
         search_fields = ('first_name', 'last_name', 'email', 'faculty_id', 'department')
         ordering = ['first_name']
         actions = [send_warning_email, send_email_action]
