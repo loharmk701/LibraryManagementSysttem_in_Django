@@ -20,7 +20,7 @@ class Book(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
-        data = f"Book Title: {self.title}\n ISBN: {self.isbn}\n Total Qty: {self.quantity}"
+        data = f"Book Title: {self.title}\n ISBN: {self.isbn}\n Author: {self.author}"
         qr = qrcode.make(data)
 
         buffer = BytesIO()
