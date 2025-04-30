@@ -34,8 +34,8 @@ class Book(models.Model):
 class Student(models.Model):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
-    email = models.EmailField(unique=True)
-    student_id = models.CharField(max_length=12, unique=True)
+    email = models.EmailField()
+    student_id = models.CharField(max_length=12)
     department = models.CharField(max_length=255)
     qr_code = models.ImageField(upload_to='qr_codes/students/', blank=True, null=True)
 
