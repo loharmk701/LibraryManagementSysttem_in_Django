@@ -6,28 +6,66 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}E.C/ I.C.T Dept. Library{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        /* Additional inline styles (optional) */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background: #f5f7fa;
+        }
+        .header {
+            background-color: #003366;
+            color: white;
+        }
+        .navigation ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            background-color: #004080;
+            display: flex;
+            justify-content: center;
+        }
+        .navigation ul li {
+            margin: 0 15px;
+        }
+        .navigation ul li a {
+            color: white;
+            text-decoration: none;
+            padding: 12px 16px;
+            display: block;
+            font-weight: 500;
+        }
+        .navigation ul li a:hover {
+            background-color: #0066cc;
+            border-radius: 6px;
+        }
+        main {
+            padding: 20px;
+        }
+        footer {
+            background-color: #003366;
+            color: white;
+            text-align: center;
+            padding: 12px;
+        }
     </style>
 </head>
 <body>
     <!-- Header -->
     <header class="header">
         <div class="banner-container">
-            <img src="{% static 'photos/banner.jpeg' %}" alt="Government Polytechnic, Gandhinagar Banner">
+            <img src="{% static 'photos/banner.jpeg' %}" alt="Government Polytechnic, Gandhinagar Banner" style="width: 100%; height: auto;">
         </div>
         <nav class="navigation">
             <ul>
-                <li><a href="{% url 'book-list' %}">Books</a></li>
-                <li><a href="{% url 'student-list' %}">Students</a></li>
-                <li><a href="{% url 'faculty-list' %}">Faculty</a></li>
-                <li><a href="{% url 'issued_books' %}">Issued Books</a></li>
-                <li><a href="{% url 'return_book' %}">Return Books</a></li>
-                <li><a href="{% url 'About' %}">About Us</a></li>
+                <li><a href="{% url 'dashboard' %}"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="{% url 'book-list' %}"><i class="fas fa-book"></i> Books</a></li>
+                <li><a href="{% url 'student-list' %}"><i class="fas fa-user-graduate"></i> Students</a></li>
+                <li><a href="{% url 'faculty-list' %}"><i class="fas fa-chalkboard-teacher"></i> Faculty</a></li>
+                <li><a href="{% url 'issued_books' %}"><i class="fas fa-book-reader"></i> Issued Books</a></li>
+                <li><a href="{% url 'return_book' %}"><i class="fas fa-undo"></i> Return Books</a></li>
+                <li><a href="{% url 'About' %}"><i class="fas fa-info-circle"></i> About Us</a></li>
             </ul>
-        </nav>
-    </header>
-        </ul>
         </nav>
     </header>
 
@@ -36,33 +74,6 @@
         {% block content %}
         <h2>Welcome to the Library Management System</h2>
         <p>Manage books, students, faculty, and more efficiently.</p>
-        <table>
-            <thead>
-                <tr>
-                    <th>Book ID</th>
-                    <th>Title</th>
-                    <th>Author</th>
-                    <th>Genre</th>
-                    <th>Published Year</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td data-label="Book ID">1</td>
-                    <td data-label="Title">The Great Gatsby</td>
-                    <td data-label="Author">F. Scott Fitzgerald</td>
-                    <td data-label="Genre">Fiction</td>
-                    <td data-label="Published Year">1925</td>
-                </tr>
-                <tr>
-                    <td data-label="Book ID">2</td>
-                    <td data-label="Title">1984</td>
-                    <td data-label="Author">George Orwell</td>
-                    <td data-label="Genre">Dystopian</td>
-                    <td data-label="Published Year">1949</td>
-                </tr>
-            </tbody>
-        </table>
         {% endblock %}
     </main>
 

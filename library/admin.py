@@ -1,4 +1,5 @@
 from django.contrib import admin
+from .models import Notice
 from django.core.mail import EmailMultiAlternatives
 from django.contrib import messages
 from django.template.loader import render_to_string
@@ -190,3 +191,4 @@ admin.site.register(Student, StudentAdmin)
 admin.site.register(Faculty, FacultyAdmin)
 admin.site.register(IssuedBook, IssuedBookAdmin)
 admin.site.register(BookIssuedHistory, BookIssuedHistoryAdmin)
+admin.site.register(Notice)

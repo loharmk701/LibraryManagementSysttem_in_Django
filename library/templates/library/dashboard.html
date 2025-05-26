@@ -1,0 +1,140 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}E.C/ I.C.T Dept. Library{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            margin: 0;
+        }
+        .panel {
+            background: white;
+            margin: 30px auto;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+        }
+        header {
+            background: #003366;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            background-color: #004080;
+        }
+        nav ul li {
+            margin: 0 15px;
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 10px;
+        }
+        nav ul li a:hover {
+            background: #0066cc;
+            border-radius: 5px;
+        }
+        .dashboard-container {
+            padding: 30px;
+        }
+        .notice-marquee {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            color: #004080;
+        }
+        .stats-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .stats-table th, .stats-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+        .stats-table th {
+            background-color: #003366;
+            color: white;
+        }
+        .stats-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .stats-table tr:hover {
+            background-color: #ddd;
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            background: #003366;
+            color: white;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="banner-container">
+            <img src="{% static 'photos/banner.jpeg' %}" alt="Government Polytechnic, Gandhinagar Banner" style="max-width: 100%; height: auto;">
+        </div>
+    </header>
+    <nav class="navigation">
+        <ul>
+            <li><a href="{% url 'dashboard' %}"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="{% url 'book-list' %}"><i class="fas fa-book"></i> Books</a></li>
+            <li><a href="{% url 'student-list' %}"><i class="fas fa-user-graduate"></i> Students</a></li>
+            <li><a href="{% url 'faculty-list' %}"><i class="fas fa-chalkboard-teacher"></i> Faculty</a></li>
+            <li><a href="{% url 'issued_books' %}"><i class="fas fa-book-reader"></i> Issued Books</a></li>
+            <li><a href="{% url 'return_book' %}"><i class="fas fa-undo"></i> Return Books</a></li>
+            <li><a href="{% url 'About' %}"><i class="fas fa-info-circle"></i> About Us</a></li>
+        </ul>
+    </nav>
+    <div class="dashboard-container">
+        <div class="notice-marquee">
+            <marquee behavior="scroll" direction="left">
+                {% for notice in notices %}
+                    <i class="fas fa-bullhorn"></i> {{ notice.message }} &nbsp;&nbsp;&nbsp;
+                {% empty %}
+                    No current notices.
+                {% endfor %}
+            </marquee>
+        </div>
+
+        <div class="panel">
+            <h2><i class="fas fa-chart-line"></i> Library Overview</h2>
+            <table class="stats-table">
+                <tr>
+                    <th><i class="fas fa-book"></i> Total Books</th>
+                    <th><i class="fas fa-book-open"></i> Issued Books</th>
+                    <th><i class="fas fa-user-graduate"></i> Students Enrolled</th>
+                    <th><i class="fas fa-chalkboard-teacher"></i> Faculty Members</th>
+                </tr>
+                <tr>
+                    <td>{{ total_books }}</td>
+                    <td>{{ issued_books }}</td>
+                    <td>{{ total_students }}</td>
+                    <td>{{ total_faculty }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <footer>
+        <p>&copy; E.C/ I.C.T Dept. Library | All Rights Reserved</p>
+    </footer>
+</body>
+</html>

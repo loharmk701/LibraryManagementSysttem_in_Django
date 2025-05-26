@@ -149,3 +149,15 @@ def return_book(request):
 def About(request):
     """Displays the About page."""
     return render(request, 'library/About.html')
+#--------------------------------------------------------------------------------------------#
+
+from .models import Notice
+def dashboard(request):
+    context = {
+        'total_books': Book.objects.count(),
+        'issued_books': IssuedBook.objects.count(),
+        'total_students': Student.objects.count(),
+        'total_faculty': Faculty.objects.count(),
+        'notices': Notice.objects.order_by('-created_at')[:5],  # Show latest 5 notices
+    }
+    return render(request, 'library\dashboard.html',context)
