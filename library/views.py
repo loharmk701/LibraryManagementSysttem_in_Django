@@ -161,3 +161,69 @@ def dashboard(request):
         'notices': Notice.objects.order_by('-created_at')[:5],  # Show latest 5 notices
     }
     return render(request, 'library\dashboard.html',context)
+#-------------------------------------------------------------------------------------------------------------------------------------------------
+from django.http import JsonResponse
+import json
+from datetime import date, timedelta
+
+def issued_book_with_qrcode(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        person_id = data.get('person_id')  # GTU Enrollment or Karmayogi ID
+        book_id = data.get('book_id')      # Book ID (QR)
+
+        try:
+            book = Book.objects.get(book_id=book_id)
+        except Book.DoesNotExist:
+            return JsonResponse({'message': 'Book not found'}, status=404)
+
+        issue_date = date.today()
+        return_date = issue_date + timedelta(days=14)
+
+        # Try to find the person as a Student first
+        student = Student.objects.filter(student_id=person_id).first()
+        if student:
+            IssuedBook.objects.create(
+                book=book,
+                issued_to_student=student,
+                issue_date=issue_date,
+                return_date=return_date
+            )
+            return JsonResponse({'message': f'Book issued to student {student.first_name}'})
+
+        # If not a student, try to find as Faculty
+        faculty = Faculty.objects.filter(faculty_id=person_id).first()
+        if faculty:
+            IssuedBook.objects.create(
+                book=book,
+                issued_to_faculty=faculty,
+                issue_date=issue_date,
+                return_date=return_date
+            )
+            return JsonResponse({'message': f'Book issued to faculty {faculty.first_name}'})
+
+        return JsonResponse({'message': 'No matching student or faculty found'}, status=404)
+#==========================================================================================================
+from django.shortcuts import render
+
+def scan_page(request):
+    return render(request, 'library/scan_issue.html')
+#-------------------------------------------------------------
+def get_book_id_from_isbn(request):
+    isbn = request.GET.get('isbn')
+    try:
+        book = Book.objects.get(isbn=isbn)
+        return JsonResponse({'book_id': book.id})
+    except Book.DoesNotExist:
+        return JsonResponse({'book_id': None})
+
+def get_person_id_from_code(request):
+    code = request.GET.get('code')
+    student = Student.objects.filter(student_id=code).first()
+    if student:
+        return JsonResponse({'id': student.id, 'role': 'student'})
+    faculty = Faculty.objects.filter(faculty_id=code).first()
+    if faculty:
+        return JsonResponse({'id': faculty.id, 'role': 'faculty'})
+    return JsonResponse({'id': None, 'role': None})
+

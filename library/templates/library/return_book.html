@@ -3,136 +3,202 @@
 {% block title %}Return Book{% endblock %}
 
 {% block content %}
-<h1 class="text-center mb-4">Return Book</h1>
 
-<!-- Display success or error messages -->
-{% if messages %}
-<div class="container mt-3">
-    {% for message in messages %}
-    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-        <strong>{{ message }}</strong>
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    {% endfor %}
-</div>
-{% endif %}
+<!-- Font Awesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
 
-<div class="container">
-    <!-- Search Form -->
-    <form method="GET" action="{% url 'return_book' %}" class="mb-4">
-        <div class="input-group">
-            <input type="text" name="search" value="{{ search_query }}" class="form-control"
-                   placeholder="Search by Book Title, ISBN, or User Name/ID">
-            <div class="input-group-append">
-                <button class="btn btn-primary" type="submit">Search</button>
-            </div>
+<div class="return-container">
+    <h2><i class="fas fa-undo-alt"></i> Return Book</h2>
+
+    <!-- Flash messages -->
+    {% if messages %}
+        <div class="alert-container">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    <i class="fas fa-info-circle"></i> {{ message }}
+                    <button class="close" onclick="this.parentElement.style.display='none';">&times;</button>
+                </div>
+            {% endfor %}
         </div>
+    {% endif %}
+
+    <!-- Search Form -->
+    <form method="GET" action="{% url 'return_book' %}" class="search-form">
+        <input type="text" name="search" value="{{ search_query }}" placeholder="🔍 Search Book, ISBN, or User ID..." />
+        <button type="submit"><i class="fas fa-search"></i> Search</button>
     </form>
 
-    <!-- Book Return Form -->
-    <form action="{% url 'return_book' %}" method="POST" class="bg-light p-4 rounded shadow-sm">
+    <!-- Return Book Form -->
+    <form method="POST" action="{% url 'return_book' %}" class="return-form">
         {% csrf_token %}
 
-        <!-- Password Field -->
         <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" class="form-control" required>
+            <label><i class="fas fa-lock"></i> Password</label>
+            <input type="password" name="password" required placeholder="Enter admin password" />
         </div>
 
-        <!-- Issued Book Selection -->
         <div class="form-group">
-            <label for="issued_book">Issued Book</label>
-            <select name="issued_book" id="issued_book" class="form-control" required>
+            <label><i class="fas fa-book"></i> Select Issued Book</label>
+            <select name="issued_book" required>
                 {% for issued_book in issued_books %}
                 <option value="{{ issued_book.id }}">
-                    {{ issued_book.book.title }} (ISBN: {{ issued_book.book.isbn }}) - 
-                    {% if issued_book.issued_to_student %}
+                    {{ issued_book.book.title }} (ISBN: {{ issued_book.book.isbn }})
+                    - {% if issued_book.issued_to_student %}
                         {{ issued_book.issued_to_student.student_id }} - {{ issued_book.issued_to_student.first_name }} {{ issued_book.issued_to_student.last_name }}
-                    {% elif issued_book.issued_to_faculty %}
+                      {% elif issued_book.issued_to_faculty %}
                         {{ issued_book.issued_to_faculty.faculty_id }} - {{ issued_book.issued_to_faculty.first_name }} {{ issued_book.issued_to_faculty.last_name }}
-                    {% endif %}
-                    (Issued on: {{ issued_book.issue_date }})
+                      {% endif %}
+                      (Issued: {{ issued_book.issue_date }})
                 </option>
                 {% endfor %}
             </select>
         </div>
 
-        <button type="submit" class="btn btn-success btn-block">Return Book</button>
+        <button type="submit" class="btn-return"><i class="fas fa-undo"></i> Return Book</button>
     </form>
 </div>
 
-<!-- Custom CSS for Enhanced Layout and Styling -->
+<!-- Custom CSS -->
 <style>
-    /* Title styling */
-    h1.text-center {
-        font-size: 2.5rem;
-        color: #007bff;
-        text-align: center;
-        margin-bottom: 20px;
-    }
+.return-container {
+    max-width: 800px;
+    margin: 40px auto;
+    background: #f9fbff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
 
-    /* Center content and constrain width */
-    .container {
-        max-width: 800px;
-        margin: 0 auto;
-    }
+.return-container h2 {
+    text-align: center;
+    color: #004085;
+    margin-bottom: 30px;
+    font-size: 28px;
+}
 
-    /* Form container enhancements */
-    form.bg-light {
-        background-color: #f9f9f9;
-        border-radius: 10px;
+.alert-container {
+    margin-bottom: 20px;
+}
+
+.alert {
+    background: #e9f7ef;
+    border-left: 5px solid #28a745;
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    color: #155724;
+    position: relative;
+    font-size: 15px;
+}
+
+.alert .close {
+    position: absolute;
+    right: 15px;
+    top: 12px;
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: #155724;
+    cursor: pointer;
+}
+
+.search-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.search-form input {
+    flex: 1;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+.search-form button {
+    background: #007bff;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.search-form button:hover {
+    background: #0056b3;
+}
+
+.return-form {
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+    animation: fadeIn 0.5s ease-in;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 12px;
+    font-size: 15px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus, .form-group select:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.btn-return {
+    width: 100%;
+    background-color: #28a745;
+    color: white;
+    padding: 14px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s;
+}
+
+.btn-return:hover {
+    background-color: #218838;
+    transform: scale(1.02);
+}
+
+@keyframes fadeIn {
+    from {opacity: 0; transform: translateY(20px);}
+    to {opacity: 1; transform: translateY(0);}
+}
+
+@media (max-width: 768px) {
+    .return-container {
         padding: 20px;
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
     }
 
-    /* Form control styling */
-    .form-control {
-        font-size: 1rem;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-        padding: 12px;
+    .search-form {
+        flex-direction: column;
     }
 
-    /* Search and selection form adjustments */
-    .input-group .form-control {
-        border-right: none;
-    }
-
-    .input-group-append .btn {
-        border-radius: 0 5px 5px 0;
-    }
-
-    /* Button styling */
-    .btn-block {
+    .search-form input, .search-form button {
         width: 100%;
-        font-size: 1.1rem;
-        padding: 10px 0;
     }
-
-    .btn-primary {
-        background-color: #007bff;
-        border-color: #007bff;
-    }
-
-    /* Message alert customization */
-    .alert {
-        font-size: 1rem;
-        padding: 15px;
-    }
-
-    /* Mobile responsive adjustments */
-    @media (max-width: 768px) {
-        h1.text-center {
-            font-size: 2rem;
-        }
-        .form-control {
-            font-size: 0.9rem;
-        }
-        .btn-block {
-            font-size: 1rem;
-        }
-    }
+}
 </style>
 {% endblock %}

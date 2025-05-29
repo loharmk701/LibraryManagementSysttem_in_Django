@@ -30,4 +30,10 @@ urlpatterns = [
     path('issued_books/', views.issued_books, name='issued_books'),
     path('issue_book_form/', views.issue_book_form, name='issue_book_form'),
     path('return_book/', views.return_book, name='return_book'),
+
+    #issued with qrcode
+    path('scan/', views.scan_page, name='scan_page'),
+    path('issue-with-qrcode/', views.issued_book_with_qrcode, name='issued_book_with_qrcode'),
+    path('api/get-book-id/', views.get_book_id_from_isbn, name='get_book_id_from_isbn'),
+    path('api/get-person-id/', views.get_person_id_from_code, name='get_person_id_from_code'),  
 ]
