@@ -58,7 +58,8 @@
         <!-- Dates -->
         <div class="form-card">
             <h3><i class="fas fa-calendar-day"></i> Issue Date</h3>
-            <input type="date" name="issue_date" id="issue_date" class="styled-input" required>
+            <input type="date" name="issue_date" id="issue_date" class="styled-input" required value="">
+
         </div>
 
         <div class="form-card">
@@ -224,13 +225,29 @@
         scannerBook.stop().then(() => {}).catch(() => {});
     }
 
-    document.getElementById("issue_date").addEventListener("change", function () {
-        const issueDate = new Date(this.value);
-        if (!isNaN(issueDate)) {
-            const returnDate = new Date(issueDate);
-            returnDate.setDate(issueDate.getDate() + 15);
-            document.getElementById("return_date").value = returnDate.toISOString().split('T')[0];
-        }
+    document.addEventListener("DOMContentLoaded", function () {
+        const issueDateInput = document.getElementById("issue_date");
+        const returnDateInput = document.getElementById("return_date");
+
+        // Set today's date as default for issue date
+        const today = new Date();
+        const todayStr = today.toISOString().split('T')[0];
+        issueDateInput.value = todayStr;
+
+        // Set return date +15 days
+        const defaultReturnDate = new Date(today);
+        defaultReturnDate.setDate(today.getDate() + 15);
+        returnDateInput.value = defaultReturnDate.toISOString().split('T')[0];
+
+        // When issue date is changed manually, recalculate return date
+        issueDateInput.addEventListener("change", function () {
+            const issueDate = new Date(this.value);
+            if (!isNaN(issueDate)) {
+                const returnDate = new Date(issueDate);
+                returnDate.setDate(issueDate.getDate() + 15);
+                returnDateInput.value = returnDate.toISOString().split('T')[0];
+            }
+        });
     });
 </script>
 
