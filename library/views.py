@@ -5,6 +5,17 @@ from django.db.models import Q
 from datetime import datetime, timedelta
 from .models import Book, Student, Faculty, IssuedBook, BookIssuedHistory
 from .forms import BookForm, StudentForm, FacultyForm
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from datetime import datetime, timedelta
+from .models import Book, IssuedBook, Student, Faculty
+from django.http import JsonResponse
+import json
+from datetime import date, timedelta
+from django.core.mail import send_mail
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import random
 
 # ------------------- BOOK VIEWS -------------------
 
@@ -95,42 +106,86 @@ def issued_books(request):
         issued_book.is_overdue = issued_book.return_date < today if issued_book.return_date else False
     return render(request, 'library/issued_books.html', {'issued_books': issued_books})
 
+
+
 def issue_book_form(request):
-    """Handles book issuance to students or faculty."""
+    """Handles book issuance to students or faculty with OTP authentication."""
     if request.method == 'POST':
-        if request.POST.get('password') != 'ict124':
-            messages.error(request, "Incorrect password.")
+        # ✅ OTP Validation
+        entered_otp = request.POST.get('otp_input')
+        session_otp = request.session.get('otp_code')
+
+        if entered_otp != session_otp:
+            messages.error(request, "❌ Invalid OTP. Please try again.")
             return redirect('issue_book_form')
-        
+
+        # ✅ Book check
         book = get_object_or_404(Book, id=request.POST.get('book'))
         if book.quantity < 1:
             messages.error(request, f"The book '{book.title}' is not available for issuing.")
             return redirect('issue_book_form')
-        
+
+        # ✅ Date parsing
         issue_date = datetime.strptime(request.POST.get('issue_date'), '%Y-%m-%d').date()
         return_date = issue_date + timedelta(days=15)
+
+        # ✅ Role and Person (Student/Faculty)
         issued_to_role = request.POST.get('issued_to_role')
         issued_to = get_object_or_404(Student if issued_to_role == 'student' else Faculty, id=request.POST.get('issued_to'))
-        
-        IssuedBook.objects.create(book=book, issued_to_student=issued_to if issued_to_role == 'student' else None, issued_to_faculty=issued_to if issued_to_role == 'faculty' else None, issue_date=issue_date, return_date=return_date)
+
+        # ✅ Create IssuedBook record
+        IssuedBook.objects.create(
+            book=book,
+            issued_to_student=issued_to if issued_to_role == 'student' else None,
+            issued_to_faculty=issued_to if issued_to_role == 'faculty' else None,
+            issue_date=issue_date,
+            return_date=return_date
+        )
+
+        # ✅ Decrease book quantity
         book.quantity -= 1
         book.save()
+
+        # ✅ Remove OTP from session
+        request.session.pop('otp_code', None)
+
         messages.success(request, f"The book '{book.title}' has been issued successfully.")
         return redirect('issued_books')
 
+    # ✅ GET request: show issue form
     return render(request, 'library/issue_book_form.html', {
         'books': Book.objects.all().order_by('title'),
         'students': Student.objects.all().order_by('first_name', 'last_name'),
         'faculties': Faculty.objects.all().order_by('first_name', 'last_name')
     })
 
+
+
+
 def return_book(request):
-    """Handles book returns and updates history."""
-    if request.method == 'POST' and request.POST.get('password') == 'ict124':
+    """Handles book returns and updates history with OTP verification."""
+    if request.method == 'POST':
+        if request.POST.get('password') != 'ict124':
+            messages.error(request, "❌ Invalid password.")
+            return redirect('return_book')
+
+        # OTP validation
+        entered_otp = request.POST.get('otp_input')
+        session_otp = request.session.get('otp_code')
+
+        if entered_otp != session_otp:
+            messages.error(request, "❌ Invalid OTP.")
+            return redirect('return_book')
+
+        # OTP is correct – clear it after use
+        request.session.pop('otp_code', None)
+
         issued_book = get_object_or_404(IssuedBook, id=request.POST.get('issued_book'), returned=False)
         issued_book.book.quantity += 1
         issued_book.book.save()
+
         issued_to = issued_book.issued_to_student or issued_book.issued_to_faculty
+
         BookIssuedHistory.objects.create(
             issued_book_id=str(issued_book.id),
             book=issued_book.book.title,
@@ -140,11 +195,15 @@ def return_book(request):
             issue_date=issued_book.issue_date,
             return_date=datetime.now()
         )
+
         issued_book.delete()
-        messages.success(request, f'Book "{issued_book.book.title}" has been successfully returned.')
+        messages.success(request, f'✅ Book "{issued_book.book.title}" has been successfully returned.')
         return redirect('return_book')
-    
-    return render(request, 'library/return_book.html', {'issued_books': IssuedBook.objects.filter(returned=False)})
+
+    return render(request, 'library/return_book.html', {
+        'issued_books': IssuedBook.objects.filter(returned=False)
+    })
+
 
 def About(request):
     """Displays the About page."""
@@ -162,9 +221,7 @@ def dashboard(request):
     }
     return render(request, 'library\dashboard.html',context)
 #-------------------------------------------------------------------------------------------------------------------------------------------------
-from django.http import JsonResponse
-import json
-from datetime import date, timedelta
+
 
 def issued_book_with_qrcode(request):
     if request.method == 'POST':
@@ -226,4 +283,31 @@ def get_person_id_from_code(request):
     if faculty:
         return JsonResponse({'id': faculty.id, 'role': 'faculty'})
     return JsonResponse({'id': None, 'role': None})
+#===========================for otp as password in scan .html====================================================#
+
+
+
+def generate_otp():
+    return str(random.randint(100000, 999999))
+
+@csrf_exempt
+def send_otp(request):
+    if request.method == "POST":
+        otp = generate_otp()
+        request.session['otp_code'] = otp  # store in session
+
+        send_mail(
+            subject="Your Library OTP Code",
+            message=f"Your OTP for issuing a book is: {otp}",
+            from_email="librarysystem120@gmail.com",
+            recipient_list=[
+                "loharmayank701@gmail.com",
+                "dakshbhalsod@gmail.com",
+                "aadilparikh66@gmail.com"
+            ],
+            fail_silently=False
+        )
+
+        return JsonResponse({"success": True})
+    return JsonResponse({"success": False})
 

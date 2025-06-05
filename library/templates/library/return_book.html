@@ -31,12 +31,27 @@
     <!-- Return Book Form -->
     <form method="POST" action="{% url 'return_book' %}" class="return-form">
         {% csrf_token %}
+          
+        <!-- OTP field   --------------------------- -->
 
         <div class="form-group">
-            <label><i class="fas fa-lock"></i> Password</label>
-            <input type="password" name="password" required placeholder="Enter admin password" />
+            <label><i class="fas fa-key"></i> Enter OTP</label>
+            <div class="otp-row">
+                <input type="text" name="otp_input" id="otp_input" placeholder="Enter 6-digit OTP" required>
+                <button type="button" class="btn-send-otp" onclick="sendOTP()" title="Send OTP to Admin">
+                    <i class="fas fa-paper-plane"></i> Send OTP
+                </button>
+            </div>
         </div>
 
+
+        <!-- Password Input -->
+        <div class="form-group">
+            <label><i class="fas fa-lock"></i> Admin Password</label>
+            <input type="password" name="password" id="password" placeholder="Enter admin password" required>
+        </div>
+
+        <!-- Book Select Dropdown -->
         <div class="form-group">
             <label><i class="fas fa-book"></i> Select Issued Book</label>
             <select name="issued_book" required>
@@ -58,7 +73,7 @@
     </form>
 </div>
 
-<!-- Custom CSS -->
+<!-- Custom CSS + JS (unchanged) -->
 <style>
 .return-container {
     max-width: 800px;
@@ -200,5 +215,61 @@
         width: 100%;
     }
 }
+.otp-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.otp-row input {
+    flex: 1;
+    padding: 12px;
+    font-size: 15px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+.btn-send-otp {
+    padding: 10px 14px;
+    background-color: #17a2b8;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s;
+    white-space: nowrap;
+    height: 42px;
+}
+
+.btn-send-otp:hover {
+    background-color: #138496;
+    transform: scale(1.05);
+}
 </style>
+
+<script>
+    function sendOTP() {
+        fetch("/send-otp/", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                alert("✅ OTP sent to admin email.");
+            } else {
+                alert("❌ Failed to send OTP.");
+            }
+        })
+        .catch(err => {
+            alert("❌ Error sending OTP.");
+            console.error(err);
+        });
+    }
+</script>
+
 {% endblock %}
