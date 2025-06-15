@@ -1,142 +1,222 @@
 {% extends "library/base.html" %}
-
+{% load static %}
 {% block title %}Issue New Book{% endblock %}
 
 {% block content %}
-<h1>Issue New Book</h1>
 
-<!-- Display success or error messages -->
-{% if messages %}
-<div class="container mt-3">
-    {% for message in messages %}
-    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-    {% endfor %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+
+<div class="scanner-container">
+    <h2 class="title"><i class="fas fa-book-medical"></i> Issue Book Manually</h2>
+
+    <!-- Success or error messages -->
+    {% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <form action="{% url 'issue_book_form' %}" method="POST" class="issue-form">
+        {% csrf_token %}
+
+        <div class="form-card">
+            <h3><i class="fas fa-lock"></i> Admin Password</h3>
+            <input type="password" name="password" class="styled-input" required placeholder="Enter admin password">
+        </div>
+
+        <div class="form-card">
+            <h3><i class="fas fa-search"></i> Search Book</h3>
+            <input type="text" id="book_search" class="styled-input" placeholder="Search book by title or ISBN">
+            <label>Select Book</label>
+            <select name="book" id="book" class="styled-input" required>
+                {% for book in books %}
+                <option value="{{ book.id }}">{{ book.isbn }} - {{ book.title }} (Available: {{ book.quantity }})</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-card">
+            <h3><i class="fas fa-user-tag"></i> Select Role</h3>
+            <select name="issued_to_role" id="issued_to_role" class="styled-input" required>
+                <option value="">-- Select Role --</option>
+                <option value="student">Student</option>
+                <option value="faculty">Faculty</option>
+            </select>
+        </div>
+
+        <div class="form-card">
+            <h3><i class="fas fa-search"></i> Search Person</h3>
+            <input type="text" id="person_search" class="styled-input" placeholder="Search by name or ID">
+            <label>Select Person</label>
+            <select name="issued_to" id="issued_to" class="styled-input" required>
+                {% for student in students %}
+                <option value="{{ student.id }}" class="issued-to-student">{{ student.student_id }} - {{ student.first_name }} {{ student.last_name }}</option>
+                {% endfor %}
+                {% for faculty in faculties %}
+                <option value="{{ faculty.id }}" class="issued-to-faculty">{{ faculty.faculty_id }} - {{ faculty.first_name }} {{ faculty.last_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-card">
+            <h3><i class="fas fa-calendar-day"></i> Issue Date</h3>
+            <input type="date" name="issue_date" id="issue_date" class="styled-input" required>
+        </div>
+
+        <div class="form-card">
+            <h3><i class="fas fa-calendar-check"></i> Return Date</h3>
+            <input type="date" name="return_date" id="return_date" class="styled-input" readonly>
+        </div>
+
+        <div class="btn-group">
+            <button type="submit" class="btn-success"><i class="fas fa-check-circle"></i> Issue Book</button>
+            <button type="reset" class="btn-warning"><i class="fas fa-undo"></i> Reset</button>
+        </div>
+    </form>
 </div>
-{% endif %}
 
-<form action="{% url 'issue_book_form' %}" method="POST">
-    {% csrf_token %}
-
-    <!-- Password Field -->
-    <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" class="form-control" required>
-    </div>
-
-    <!-- Search for Books -->
-    <div class="form-group">
-        <label for="book_search">Search Book (ISBN, Title)</label>
-        <input type="text" id="book_search" class="form-control" placeholder="Search for books...">
-    </div>
-
-    <!-- Select Book -->
-    <div class="form-group">
-        <label for="book">Book</label>
-        <select name="book" id="book" class="form-control" required>
-            {% for book in books %}
-            <option value="{{ book.id }}">{{ book.isbn }} - {{ book.title }} (Available: {{ book.quantity }})</option>
-            {% endfor %}
-        </select>
-    </div>
-
-    <!-- Search for Person -->
-    <div class="form-group">
-        <label for="person_search">Search Issued To (ID, Name)</label>
-        <input type="text" id="person_search" class="form-control" placeholder="Search for person...">
-    </div>
-
-    <!-- Select Role (Student/Faculty) -->
-    <div class="form-group">
-        <label for="issued_to_role">Issued To Role</label>
-        <select name="issued_to_role" id="issued_to_role" class="form-control" required>
-            <option value="student">Student</option>
-            <option value="faculty">Faculty</option>
-        </select>
-    </div>
-
-    <!-- Select Person (Student or Faculty) -->
-    <div class="form-group" id="issued_to_select">
-        <label for="issued_to">Issued To</label>
-        <select name="issued_to" id="issued_to" class="form-control" required>
-            {% for student in students %}
-            <option value="{{ student.id }}" class="issued-to-student">{{ student.student_id }} - {{ student.first_name }} {{ student.last_name }}</option>
-            {% endfor %}
-            {% for faculty in faculties %}
-            <option value="{{ faculty.id }}" class="issued-to-faculty">{{ faculty.faculty_id }} - {{ faculty.first_name }} {{ faculty.last_name }}</option>
-            {% endfor %}
-        </select>
-    </div>
-
-    <!-- Issue Date -->
-    <div class="form-group">
-        <label for="issue_date">Issue Date</label>
-        <input type="date" name="issue_date" id="issue_date" class="form-control" required>
-    </div>
-
-    <!-- Return Date (Automatically set) -->
-    <div class="form-group">
-        <label for="return_date">Return Date</label>
-        <input type="date" name="return_date" id="return_date" class="form-control" readonly>
-    </div>
-
-    <!-- Submit Button -->
-    <button type="submit" class="btn btn-success">Issue Book</button>
-</form>
-
-<!-- Add CSS styles and JavaScript -->
-<style>
-    .form-group { margin-bottom: 15px; }
-    .form-control { width: 100%; padding: 10px; margin-top: 5px; border-radius: 5px; border: 1px solid #ccc; }
-    .btn { padding: 10px 20px; border-radius: 5px; background-color: #28a745; color: white; font-size: 16px; }
-    .btn:hover { background-color: #218838; }
-    label { font-weight: bold; }
-</style>
-
+<!-- Script -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Dynamic filtering for book search
+        // Book search filter
         document.getElementById('book_search').addEventListener('keyup', function () {
-            const searchValue = this.value.toLowerCase();
-            document.querySelectorAll('#book option').forEach(option => {
-                option.style.display = option.textContent.toLowerCase().includes(searchValue) ? '' : 'none';
+            const val = this.value.toLowerCase();
+            document.querySelectorAll('#book option').forEach(opt => {
+                opt.style.display = opt.textContent.toLowerCase().includes(val) ? '' : 'none';
             });
         });
 
-        // Dynamic filtering for person search
+        // Person search filter
         document.getElementById('person_search').addEventListener('keyup', function () {
-            const searchValue = this.value.toLowerCase();
-            document.querySelectorAll('#issued_to option').forEach(option => {
-                option.style.display = option.textContent.toLowerCase().includes(searchValue) ? '' : 'none';
+            const val = this.value.toLowerCase();
+            document.querySelectorAll('#issued_to option').forEach(opt => {
+                opt.style.display = opt.textContent.toLowerCase().includes(val) ? '' : 'none';
             });
         });
 
-        // Auto-calculate return date (15 days from issue date)
-        document.getElementById('issue_date').addEventListener('change', function () {
-            const issueDate = new Date(this.value);
-            if (isNaN(issueDate)) return;
+        // Role-based filter
+        const roleSel = document.getElementById('issued_to_role');
+        const personSel = document.getElementById('issued_to');
+        const studentOpts = document.querySelectorAll('.issued-to-student');
+        const facultyOpts = document.querySelectorAll('.issued-to-faculty');
 
-            const returnDate = new Date(issueDate);
-            returnDate.setDate(issueDate.getDate() + 15);
-
-            document.getElementById('return_date').value = returnDate.toISOString().split('T')[0];
-        });
-
-        // Initial filtering for person roles
-        const issuedToRole = document.getElementById('issued_to_role');
-        const issuedToSelect = document.getElementById('issued_to');
-        const studentOptions = document.querySelectorAll('.issued-to-student');
-        const facultyOptions = document.querySelectorAll('.issued-to-faculty');
-
-        function filterIssuedToOptions() {
-            const role = issuedToRole.value;
-            studentOptions.forEach(option => option.style.display = (role === 'student') ? '' : 'none');
-            facultyOptions.forEach(option => option.style.display = (role === 'faculty') ? '' : 'none');
-            issuedToSelect.value = '';
+        function updateRoleOptions() {
+            const role = roleSel.value;
+            studentOpts.forEach(opt => opt.style.display = (role === 'student') ? '' : 'none');
+            facultyOpts.forEach(opt => opt.style.display = (role === 'faculty') ? '' : 'none');
+            personSel.value = '';
         }
 
-        issuedToRole.addEventListener('change', filterIssuedToOptions);
-        filterIssuedToOptions();
+        roleSel.addEventListener('change', updateRoleOptions);
+        updateRoleOptions();
+
+        // Auto-return date 15 days ahead
+        const issue = document.getElementById("issue_date");
+        const ret = document.getElementById("return_date");
+
+        const today = new Date();
+        issue.value = today.toISOString().split('T')[0];
+        const returnDate = new Date(today);
+        returnDate.setDate(today.getDate() + 15);
+        ret.value = returnDate.toISOString().split('T')[0];
+
+        issue.addEventListener('change', function () {
+            const d = new Date(this.value);
+            if (!isNaN(d)) {
+                const r = new Date(d);
+                r.setDate(d.getDate() + 15);
+                ret.value = r.toISOString().split('T')[0];
+            }
+        });
     });
 </script>
+
+<!-- Style (Same theme as scan_issue) -->
+<style>
+    .scanner-container {
+        max-width: 900px;
+        margin: auto;
+        padding: 30px;
+        background: #f0f4ff;
+        border-radius: 12px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+
+    .title {
+        text-align: center;
+        color: #003366;
+        margin-bottom: 30px;
+        font-size: 28px;
+    }
+
+    .form-card {
+        margin-bottom: 20px;
+    }
+
+    .form-card h3 {
+        margin-bottom: 8px;
+        color: #004080;
+    }
+
+    .styled-input, select {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        margin-top: 5px;
+        transition: border-color 0.3s;
+    }
+
+    .styled-input:focus, select:focus {
+        outline: none;
+        border-color: #3399ff;
+    }
+
+    .btn-group {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 30px;
+    }
+
+    .btn-success, .btn-warning {
+        padding: 12px 25px;
+        font-size: 16px;
+        font-weight: bold;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .btn-success:hover {
+        background-color: #218838;
+        transform: scale(1.05);
+    }
+
+    .btn-warning {
+        background-color: #ffc107;
+        color: black;
+    }
+
+    .btn-warning:hover {
+        background-color: #e0a800;
+        transform: scale(1.05);
+    }
+
+    @media (max-width: 768px) {
+        .btn-group {
+            flex-direction: column;
+        }
+    }
+</style>
 
 {% endblock %}

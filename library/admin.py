@@ -114,7 +114,7 @@ if import_export_installed:
 
     class StudentAdmin(ImportExportMixin, admin.ModelAdmin):
         resource_class = StudentResource
-        list_display = ('id', 'first_name', 'last_name', 'email', 'student_id', 'department', 'qr_code_preview')
+        list_display = ( 'first_name', 'last_name', 'email', 'student_id', 'department', 'qr_code_preview')
         search_fields = ('first_name', 'last_name', 'email', 'student_id', 'department')
         ordering = ['first_name']
         actions = [send_warning_email, send_email_action]
@@ -127,7 +127,7 @@ if import_export_installed:
 
     class FacultyAdmin(ImportExportMixin, admin.ModelAdmin):
         resource_class = FacultyResource
-        list_display = ('id', 'first_name', 'last_name', 'email', 'faculty_id', 'department', 'qr_code_preview')
+        list_display = ( 'first_name', 'last_name', 'email', 'faculty_id', 'department', 'qr_code_preview')
         search_fields = ('first_name', 'last_name', 'email', 'faculty_id', 'department')
         ordering = ['first_name']
         actions = [send_warning_email, send_email_action]
@@ -161,13 +161,13 @@ else:
         ordering = ['title']
 
     class StudentAdmin(admin.ModelAdmin):
-        list_display = ('id', 'first_name', 'last_name', 'email', 'student_id', 'department', 'qr_code_preview')
+        list_display = ( 'first_name', 'last_name', 'email', 'student_id', 'department', 'qr_code_preview')
         search_fields = ('first_name', 'last_name', 'email', 'student_id', 'department')
         ordering = ['first_name']
         actions = [send_warning_email, send_email_action]
 
     class FacultyAdmin(admin.ModelAdmin):
-        list_display = ('id', 'first_name', 'last_name', 'email', 'faculty_id', 'department', 'qr_code_preview')
+        list_display = ( 'first_name', 'last_name', 'email', 'faculty_id', 'department', 'qr_code_preview')
         search_fields = ('first_name', 'last_name', 'email', 'faculty_id', 'department')
         ordering = ['first_name']
         actions = [send_warning_email, send_email_action]

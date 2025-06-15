@@ -135,8 +135,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'  # Replace with your SMTP server
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'librarysystem120@gmail.com'  # Replace with your email
-EMAIL_HOST_PASSWORD = 'ylzhpbwgpwtfgjrh'  # Replace with your email password
+EMAIL_HOST_USER = "ecictdepatmentlibrary@gmail.com"  # Replace with your email
+EMAIL_HOST_PASSWORD = 'ecdepartment120'  # Replace with your email password
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'

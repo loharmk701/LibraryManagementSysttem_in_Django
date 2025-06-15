@@ -1,41 +1,184 @@
-<!-- student_list.html -->
 {% extends "library/base.html" %}
+{% load static %}
 
-{% block title %}Student List{% endblock %}
+{% block title %}🎓 Student List{% endblock %}
 
 {% block content %}
-<h2>Student List</h2>
-    
-<table>
-    <thead>
-        <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Email</th>
-            <th>Student ID</th>
-            <th>Department</th>
-            <th>QR Code</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for student in students %}
-        <tr>
-            <td>{{ student.first_name }}</td>
-            <td>{{ student.last_name }}</td>
-            <td>{{ student.email }}</td>
-            <td>{{ student.student_id }}</td>
-            <td>{{ student.department }}</td>
-            <td>
-                {% if student.qr_code %}
-                    <img src="{{ student.qr_code.url }}" width="80" height="80">
-                {% else %}
-                    No QR
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
 
+<h2 style="text-align:center; font-size: 28px; color: #0d6efd;">
+    🎓 Student List
+</h2>
+
+<!-- Search Bar -->
+<div class="search-container">
+    <div class="search-box">
+        <i class="fas fa-search search-icon"></i>
+        <input 
+            type="text" 
+            id="search-bar" 
+            onkeyup="filterStudents()" 
+            placeholder="Search by Name, E-mail, Enrollment..." 
+            class="search-bar"
+        />
+    </div>
+</div>
+
+<!-- Student Table -->
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th><i class="fas fa-user"></i> First Name</th>
+                <th><i class="fas fa-user"></i> Last Name</th>
+                <th><i class="fas fa-envelope"></i> Email</th>
+                <th><i class="fas fa-id-badge"></i> Student ID</th>
+                <th><i class="fas fa-school"></i> Department</th>
+                <th><i class="fas fa-qrcode"></i> QR Code</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in students %}
+            <tr>
+                <td>{{ student.first_name }}</td>
+                <td>{{ student.last_name }}</td>
+                <td>{{ student.email }}</td>
+                <td>{{ student.student_id }}</td>
+                <td>{{ student.department }}</td>
+                <td>
+                    {% if student.qr_code %}
+                        <img src="{{ student.qr_code.url }}" width="120" height="120" alt="QR Code">
+                    {% else %}
+                        <span style="color: #888;">No QR</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Font Awesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+
+<!-- Style -->
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+}
+
+/* Search Bar */
+.search-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+    margin-top: 20px;
+}
+.search-box {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+}
+.search-bar {
+    width: 100%;
+    padding: 12px 20px 12px 45px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 50px;
+    background-color: #f1f3f4;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.05);
+}
+.search-bar:focus {
+    background-color: #ffffff;
+    outline: none;
+    box-shadow: 0 0 8px rgba(13, 110, 253, 0.2);
+}
+.search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    font-size: 16px;
+    pointer-events: none;
+}
+
+/* Table Styling */
+.table-container {
+    overflow-x: auto;
+    margin: 0 auto;
+    max-width: 1100px;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+th, td {
+    padding: 14px 18px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+th {
+    background-color: #0d6efd;
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+th i {
+    margin-right: 6px;
+}
+td {
+    color: #333;
+    font-size: 15px;
+    vertical-align: middle;
+}
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+tr:hover {
+    background-color: #eaf4ff;
+    transition: background-color 0.3s ease;
+}
+img {
+    border-radius: 6px;
+    transition: transform 0.3s ease;
+}
+img:hover {
+    transform: scale(1.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    th, td {
+        font-size: 13px;
+        padding: 10px;
+    }
+    img {
+        width: 80px !important;
+        height: 80px !important;
+    }
+}
+</style>
+
+<!-- JavaScript Search -->
+<script>
+function filterStudents() {
+    const input = document.getElementById("search-bar").value.toLowerCase();
+    const rows = document.querySelectorAll("table tbody tr");
+
+    rows.forEach(row => {
+        const match = Array.from(row.cells).some(cell =>
+            cell.textContent.toLowerCase().includes(input)
+        );
+        row.style.display = match ? "" : "none";
+    });
+}
+</script>
 
 {% endblock %}

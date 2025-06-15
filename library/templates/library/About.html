@@ -5,165 +5,167 @@
 
 {% block content %}
 <style>
-/* Additional styles for the enhanced About Us page */
-.profile-photo {
-    width: 150px; /* Increased width */
-    height: 150px; /* Increased height */
-    border-radius: 50%; /* Keeps the circular shape */
-    object-fit: cover; /* Ensures the image doesn't stretch */
-    margin-bottom: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Slight shadow for better visibility */
+.about-container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    color: #222;
+    border-radius: 10px;
 }
 
-.guide-info, .developer {
+.profile-photo {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+.section-heading {
+    font-size: 2em;
+    font-weight: bold;
+    color:black;
+    margin-top: 40px;
+    margin-bottom: 20px;
+    /* Removed border-bottom and padding-bottom */
+}
+
+
+.person {
     display: flex;
     align-items: center;
+    margin-bottom: 25px;
     gap: 20px;
 }
 
-.developer img, .guide-info img {
-    margin-right: 20px;
+.person h4 {
+    margin: 0;
+    color: #0d6efd;
+    font-size: 1.4em;
 }
 
-.about-container {
-    max-width: 900px;
-    margin: 30px auto;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+.person .role {
+    font-weight: 500;
+    font-size: 14px;
+    color: #666;
 }
 
-.about-heading {
-    text-align: center;
-    font-size: 2.5em;
-    color: #333;
-    margin-bottom: 20px;
-}
-
-section {
-    margin-bottom: 30px;
-}
-
-h3 {
-    font-size: 1.8em;
-    margin-bottom: 10px;
+.person p {
+    margin: 3px 0;
     color: #444;
 }
 
-h4 {
-    font-size: 1.6em;
-    color: #007bff;
-    margin-bottom: 5px;
-}
-
 a {
-    color: #007bff;
+    color: #0d6efd;
     text-decoration: none;
 }
 
 a:hover {
     text-decoration: underline;
 }
+
+@media (max-width: 768px) {
+    .person {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
 </style>
 
 <div class="about-container">
-    <h2 class="about-heading">About Us</h2>
-    
-    <section class="overview">
-        <h3>Library Management System Overview</h3>
-        <p>
-            The Library Management System is developed by code crafter team. It provides a comprehensive solution for managing the library's resources efficiently. The system allows easy handling of book inventories, student data, and book issue/return processes. It also includes advanced features for seamless management.
-        </p>
-    </section>
+    <h2 style="text-align:center; font-size:2.5em; color:#0d6efd; margin:50px 0 30px;">
+    📘 About Us
+</h2>
 
-    <section class="guide">
-        <h3>Guided By</h3>
-        <div class="guide-info">
-            <img src="{% static 'photos/kalpesh-parmar.jpg' %}" alt="Guide Photo" class="profile-photo">
-            <div>
-                <h4>Mr.Kalpeshkumar M. Parmar</h4>
-                <p>Email: <a href="mailto:kalpesh.polytech@gmail.com">kalpesh.polytech@gmail.com</a></p>
-                <p>Mobile: <a href="tel:+918128698321">8128698321</a></p>
-            </div>
-        </div>
-    </section>
-    <section class="guide">
-        
-        <div class="guide-info">
-            <img src="{% static 'photos/pravin.jpg' %}" alt="Guide Photo" class="profile-photo">
-            <div>
-                <h4>Dr. Pravin J. Dalvadi</h4>
-                <p>Email: <a href="mailto:kalpesh.polytech@gmail.com">pravindalvadi3187@gmail.com
-                </a></p>
-                <p>Mobile: <a href="tel:+918128698321">8469895457</a></p>
-            </div>
-        </div>
-    </section>
-    <section class="guide">
-        
-        <div class="guide-info">
-            <img src="{% static 'photos/pratik.jpeg' %}" alt="Guide Photo" class="profile-photo">
-            <div>
-                <h4>Mr. Pratikkumar A. Parmar </h4>
-                <p>Email: <a href="mailto:kalpesh.polytech@gmail.com">Pratik.parmar24192@gmail.com
-                </a></p>
-                <p>Mobile: <a href="tel:+918128698321">8292337742
-                </a></p>
-            </div>
-        </div>
-    </section>
-    
+    <p>
+        The Library Management System is developed by the Code Crafter team. It provides a user-friendly platform for managing library books, user data, and issue/return operations. It is optimized for both administrators and end-users in academic settings.
+    </p>
 
-    <section class="developers">
-        <h3>About the Developers</h3>
-        <div class="developer-info">
-            <div class="developer">
-                <img src="{% static 'photos/lohar-mayank.jpg' %}" alt="Lohar Mayank" class="profile-photo">
-                <div>
-                    <h4>Lohar Mayank T.</h4>
-                    <p>Enrollment No:<a href="#"> 236230332025</a> </p>
-                    <p>Email: <a href="mailto:loharmayank701@gmail.com">loharmayank701@gmail.com</a></p>
-                    <p>Mobile: <a href="tel:+917016965701">7016965701</a></p>
-                </div>
-            </div>
-            <div class="developer">
-                <img src="{% static 'photos/daksh-bhalsod.jpg' %}" alt="Daksh Bhalsod" class="profile-photo">
-                <div>
-                    <h4>Daksh Bhalsod</h4>
-                    <p>Enrollment No:<a href="#">236230332002</a> </p>
-                    <p>Email: <a href="mailto:dakshbhalsod@gmail.com">dakshbhalsod@gmail.com</a></p>
-                    <p>Mobile: <a href="tel:+917043299890">7043299890</a></p>
-                </div>
-            </div>
-            <div class="developer">
-                <img src="{% static 'photos/jaimin-pathak.jpg' %}" alt="Jaimin Pathak" class="profile-photo">
-                <div>
-                    <h4>Jaimin Pathak</h4>
-                    <p>Enrollment No:<a href="#">236230332045</a> </p>
-                    <p>Email: <a href="mailto:jaiminpathak16@gmail.com">jaiminpathak16@gmail.com</a></p>
-                    <p>Mobile: <a href="tel:+916359200710">6359200710</a></p>
-                </div>
-            </div>
-            <div class="developer">
-                <img src="{% static 'photos/adil-parikh.jpg' %}" alt="Adil Parikh" class="profile-photo">
-                <div>
-                    <h4> Adil Parikh</h4>
-                    <p>Enrollment No: <a href="#">236230332032</a></p>
-                    <p>Email: <a href="mailto:aadilparikh66@gmail.com">aadilparikh66@gmail.com</a></p>
-                    <p>Mobile: <a href="tel:+919313407011">9313407011</a></p>
-                </div>
-            </div>
-            <div class="developer">
-                <img src="{% static 'photos/shruti.jpeg' %}" alt="Shruti Suryavanshi" class="profile-photo">
-                <div>
-                    <h4>Suryavanshi Shruti S.</h4>
-                    <p>Enrollment No: <a href="#">236230332061</a></p>
-                    <p>Email: <a href="mailto:shrutisushil1027@gmail.com">shrutisushil1027@gmail.com</a></p>
-                    <p>Mobile: <a href="tel:+919426808055">94268 08055</a></p>
-                </div>
-            </div>
+    <h3 class="section-heading"> Guides</h3>
+
+    <div class="person">
+        <img src="{% static 'photos/kalpesh-parmar.jpg' %}" alt="Kalpesh Parmar" class="profile-photo">
+        <div>
+            <h4>Mr. Kalpeshkumar M. Parmar</h4>
+            <p>Email: <a href="mailto:kalpesh.polytech@gmail.com">kalpesh.polytech@gmail.com</a></p>
+            <p>Mobile: <a href="tel:+918128698321">+91 8128698321</a></p>
         </div>
-    </section>
+    </div>
+
+    <div class="person">
+        <img src="{% static 'photos/pravin.jpg' %}" alt="Pravin Dalvadi" class="profile-photo">
+        <div>
+            <h4>Dr. Pravin J. Dalvadi</h4>
+            <p>Email: <a href="mailto:pravindalvadi3187@gmail.com">pravindalvadi3187@gmail.com</a></p>
+            <p>Mobile: <a href="tel:+918469895457">+91 8469895457</a></p>
+        </div>
+    </div>
+
+    <div class="person">
+        <img src="{% static 'photos/pratik.jpeg' %}" alt="Pratik Parmar" class="profile-photo">
+        <div>
+            <h4>Mr. Pratikkumar A. Parmar</h4>
+            <p>Email: <a href="mailto:Pratik.parmar24192@gmail.com">Pratik.parmar24192@gmail.com</a></p>
+            <p>Mobile: <a href="tel:+918292337742">+91 8292337742</a></p>
+        </div>
+    </div>
+
+    <h3 class="section-heading"> Developers</h3>
+
+    <div class="person">
+        <img src="{% static 'photos/lohar-mayank.jpg' %}" alt="Lohar Mayank" class="profile-photo">
+        <div>
+            <h4>Lohar Mayank T.</h4>
+            <p class="role">🎖️ Lead Developer</p>
+            <p>Email: <a href="mailto:loharmayank701@gmail.com">loharmayank701@gmail.com</a></p>
+            <p>Mobile: <a href="tel:+917016965701">+91 7016965701</a></p>
+            <p>Branch: <a href="#">Information and Communication Technology</a></p>
+        </div>
+    </div>
+
+    <div class="person">
+        <img src="{% static 'photos/daksh-bhalsod.jpg' %}" alt="Daksh Bhalsod" class="profile-photo">
+        <div>
+            <h4>Daksh Bhalsod</h4>
+            <p class="role">👨‍💻 Developer</p>
+            <p>Email: <a href="mailto:dakshbhalsod@gmail.com">dakshbhalsod@gmail.com</a></p>
+            <p>Mobile: <a href="tel:+917043299890">+91 7043299890</a></p>
+            <p>Branch: <a href="#">Information and Communication Technology</a></p>
+        </div>
+    </div>
+
+    <div class="person">
+        <img src="{% static 'photos/jaimin-pathak.jpg' %}" alt="Jaimin Pathak" class="profile-photo">
+        <div>
+            <h4>Jaimin Pathak</h4>
+            <p class="role">👨‍💻 Developer</p>
+            <p>Email: <a href="mailto:jaiminpathak16@gmail.com">jaiminpathak16@gmail.com</a></p>
+            <p>Mobile: <a href="tel:+916359200710">+91 6359200710</a></p>
+            <p>Branch: <a href="#">Information and Communication Technology</a></p>
+        </div>
+    </div>
+
+    <div class="person">
+        <img src="{% static 'photos/adil-parikh.jpg' %}" alt="Adil Parikh" class="profile-photo">
+        <div>
+            <h4>Adil Parikh</h4>
+            <p class="role">👨‍💻 Developer</p>
+            <p>Email: <a href="mailto:aadilparikh66@gmail.com">aadilparikh66@gmail.com</a></p>
+            <p>Mobile: <a href="tel:+919313407011">+91 9313407011</a></p>
+            <p>Branch: <a href="#">Information and Communication Technology</a></p>
+        </div>
+    </div>
+
+    <div class="person">
+        <img src="{% static 'photos/shruti.jpeg' %}" alt="Shruti Suryavanshi" class="profile-photo">
+        <div>
+            <h4>Shruti Suryavanshi</h4>
+            <p class="role">📋 Documentation & Management</p>           
+            <p>Email: <a href="mailto:shrutisushil1027@gmail.com">shrutisushil1027@gmail.com</a></p>
+            <p>Mobile: <a href="tel:+919426808055">+91 9426808055</a></p>
+            <p>Branch: <a href="#">Information and Communication Technology</a></p>
+        </div>
+    </div>
 </div>
 {% endblock %}

@@ -1,95 +1,184 @@
 {% extends "library/base.html" %}
+{% load static %}
 
-{% block title %}Issued Books{% endblock %}
+{% block title %}📖 Issued Books{% endblock %}
 
 {% block content %}
-<h1>Issued Books</h1>
 
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Book Title</th>
-            <th>Issued To</th>
-            <th>Issued To Role</th>
-            <th>Issue Date</th>
-            <th>Return Date</th>
-            <th>Overdue</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for issued_book in issued_books %}
-        <tr>
-            <td>{{ issued_book.book.title }}</td>
-            <td>
-                {% if issued_book.issued_to_student %}
-                    {{ issued_book.issued_to_student.first_name }} {{ issued_book.issued_to_student.last_name }}
-                {% elif issued_book.issued_to_faculty %}
-                    {{ issued_book.issued_to_faculty.first_name }} {{ issued_book.issued_to_faculty.last_name }}
-                {% else %}
-                    N/A
-                {% endif %}
-            </td>
-            <td>
-                {% if issued_book.issued_to_student %}
-                    Student
-                {% elif issued_book.issued_to_faculty %}
-                    Faculty
-                {% else %}
-                    N/A
-                {% endif %}
-            </td>
-            <td>{{ issued_book.issue_date }}</td>
-            <td>{{ issued_book.return_date }}</td>
-            <td>
-                {% if issued_book.is_overdue %}
-                    <span class="text-danger">Overdue</span>
-                {% else %}
-                    <span class="text-success">Not Overdue</span>
-                {% endif %}
-            </td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="6" class="text-center">No books have been issued.</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<h2 style="text-align:center; font-size: 28px; font-weight: bold; color: #0d6efd;">
+    📖 Issued Books
+</h2>
 
-<a href="{% url 'issue_book_form' %}" class="btn btn-primary custom-btn">Issue New Book</a>
-<a href="{% url 'scan_page' %}" class="btn btn-primary custom-btn">Issue New Book by QR</a>
+<!-- Table -->
+<div class="table-container">
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th><i class="fas fa-book"></i> Book Title</th>
+                <th><i class="fas fa-user"></i> Issued To</th>
+                <th><i class="fas fa-user-tag"></i> Role</th>
+                <th><i class="fas fa-calendar-plus"></i> Issue Date</th>
+                <th><i class="fas fa-calendar-times"></i> Return Date</th>
+                <th><i class="fas fa-clock"></i> Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for issued_book in issued_books %}
+            <tr>
+                <td>{{ issued_book.book.title }}</td>
+                <td>
+                    {% if issued_book.issued_to_student %}
+                        {{ issued_book.issued_to_student.first_name }} {{ issued_book.issued_to_student.last_name }}
+                    {% elif issued_book.issued_to_faculty %}
+                        {{ issued_book.issued_to_faculty.first_name }} {{ issued_book.issued_to_faculty.last_name }}
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </td>
+                <td>
+                    {% if issued_book.issued_to_student %}
+                        Student
+                    {% elif issued_book.issued_to_faculty %}
+                        Faculty
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </td>
+                <td>{{ issued_book.issue_date }}</td>
+                <td>{{ issued_book.return_date }}</td>
+                <td>
+                    {% if issued_book.is_overdue %}
+                        <span class="status-overdue">🔴 Overdue</span>
+                    {% else %}
+                        <span class="status-normal">🕒 {{ issued_book.days_left }} day{{ issued_book.days_left|pluralize }} left</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center">No books have been issued.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 
-<!-- Custom CSS -->
+<!-- Action Buttons -->
+<div class="button-group">
+    <a href="{% url 'issue_book_form' %}" class="gradient-btn">
+        <i class="fas fa-plus-circle"></i> Issue Book
+    </a>
+    <a href="{% url 'scan_page' %}" class="gradient-btn">
+        <i class="fas fa-qrcode"></i> Issue via QR
+    </a>
+</div>
+
+<!-- Font Awesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+
+<!-- Styling -->
 <style>
-    /* Styling for the "Issue New Book" button */
-    .custom-btn {
-        display: inline-block;
-        background-color: #007bff;
-        color: white;
-        padding: 10px 20px;
-        font-size: 1.1rem;
-        border-radius: 5px;
-        text-align: center;
-        text-decoration: none;
-        transition: background-color 0.3s ease, transform 0.2s ease;
-    }
+body {
+    font-family: "Segoe UI", sans-serif;
+    background-color: #f9fafc;
+}
 
-    .custom-btn:hover {
-        background-color: #0056b3;
-        transform: translateY(-2px);
-    }
+h2 {
+    margin: 30px 0 20px;
+}
 
-    .custom-btn:active {
-        background-color: #004085;
-        transform: translateY(1px);
-    }
+/* Table */
+.table-container {
+    overflow-x: auto;
+    margin-bottom: 20px;
+}
 
-    /* Styling for overdue status */
-    .text-danger {
-        color: red;
-    }
-    .text-success {
-        color: green;
-    }
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.styled-table th, .styled-table td {
+    padding: 14px 18px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.styled-table th {
+    background-color: #007bff; /* solid theme color */
+    color: white;
+    font-weight: bold;
+    font-size: 15px;
+    letter-spacing: 0.5px;
+}
+
+.styled-table th i {
+    margin-right: 6px;
+}
+
+.styled-table tbody tr:nth-child(even) {
+    background-color: #f4f8ff;
+}
+
+.styled-table tbody tr:hover {
+    background-color: #eaf4ff;
+}
+
+/* Gradient Buttons */
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.button-group a {
+    padding: 12px 24px;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    color: white;
+    background: linear-gradient(135deg, #007bff, #00bfff);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.button-group a:hover {
+    background: linear-gradient(135deg, #0056b3, #0095d9);
+    transform: translateY(-2px);
+}
+
+/* Status Styles */
+.status-overdue {
+    color: red;
+    font-weight: bold;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+.status-normal {
+    color: #28a745;
+    font-weight: bold;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.6; }
+    100% { opacity: 1; }
+}
 </style>
+
 {% endblock %}

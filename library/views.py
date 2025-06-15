@@ -98,13 +98,21 @@ def faculty_delete(request, pk):
 
 # ------------------- BOOK ISSUING & RETURN -------------------
 
+from django.utils import timezone
+from datetime import timedelta
+
 def issued_books(request):
-    """List all issued books and mark overdue ones."""
     issued_books = IssuedBook.objects.all()
     today = timezone.now().date()
-    for issued_book in issued_books:
-        issued_book.is_overdue = issued_book.return_date < today if issued_book.return_date else False
-    return render(request, 'library/issued_books.html', {'issued_books': issued_books})
+
+    for book in issued_books:
+        book.days_since_issue = (today - book.issue_date).days
+        book.days_left = max(0, 15 - book.days_since_issue)
+        book.is_overdue = today > book.return_date or book.days_left == 0
+
+    return render(request, 'library/issued_books.html', {
+        'issued_books': issued_books
+    })
 
 
 
